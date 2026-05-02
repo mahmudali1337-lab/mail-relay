@@ -42,7 +42,9 @@ workers: 5
 retry_max: 10
 
 servers:
-  - "$SERVER_IP"
+  - "198.46.199.132"
+  - "77.90.185.102"
+  - "213.177.179.55"
 
 domains:
   - domain: "$DOMAIN"
