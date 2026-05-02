@@ -2,6 +2,8 @@ package main
 
 import (
 	"bytes"
+	"crypto"
+	_ "crypto/rsa"
 	"crypto/x509"
 	"encoding/pem"
 	"fmt"
@@ -37,8 +39,12 @@ func signDKIM(item *QueueItem) ([]byte, error) {
 	if block == nil {
 		return nil, fmt.Errorf("invalid pem block")
 	}
-	privKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-	if err != nil {
+	var privKey crypto.Signer
+	if k, err := x509.ParsePKCS1PrivateKey(block.Bytes); err == nil {
+		privKey = k
+	} else if k2, err2 := x509.ParsePKCS8PrivateKey(block.Bytes); err2 == nil {
+		privKey = k2.(crypto.Signer)
+	} else {
 		return nil, fmt.Errorf("parse key: %w", err)
 	}
 
