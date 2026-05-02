@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-REPO_URL="https://github.com/$(git config user.name 2>/dev/null || echo 'user')/mail-relay"
+REPO_URL="https://github.com/mahmudali1337-lab/mail-relay"
 INSTALL_DIR="/opt/mail-relay"
 SERVICE="mail-relay"
 QUEUE_DIR="/var/spool/mailrelay"
@@ -32,8 +32,7 @@ fi
 
 PASS=$(openssl rand -hex 16)
 
-if [ ! -f "$CONFIG" ]; then
-    cat > "$CONFIG" << EOF
+cat > "$CONFIG" << EOF
 listen: ":587"
 hostname: "mail.$DOMAIN"
 password: "$PASS"
@@ -51,7 +50,6 @@ domains:
     dkim_key: "$DKIM_KEY"
     selector: "mail"
 EOF
-fi
 
 cat > "/etc/systemd/system/$SERVICE.service" << EOF
 [Unit]
