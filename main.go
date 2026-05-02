@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/emersion/go-sasl"
 	gosmtp "github.com/emersion/go-smtp"
 	"gopkg.in/yaml.v3"
 )
@@ -47,11 +48,20 @@ type Session struct {
 	buf  bytes.Buffer
 }
 
-func (s *Session) AuthPlain(_, password string) error {
-	if cfg.Password != "" && password != cfg.Password {
-		return gosmtp.ErrAuthFailed
+func (s *Session) AuthMechanisms() []string {
+	return []string{sasl.Plain}
+}
+
+func (s *Session) Auth(mech string) (sasl.Server, error) {
+	if mech != sasl.Plain {
+		return nil, gosmtp.ErrAuthUnsupported
 	}
-	return nil
+	return sasl.NewPlainServer(func(identity, username, password string) error {
+		if cfg.Password != "" && password != cfg.Password {
+			return gosmtp.ErrAuthFailed
+		}
+		return nil
+	}), nil
 }
 
 func (s *Session) Mail(from string, _ *gosmtp.MailOptions) error {
