@@ -1,0 +1,17 @@
+listen: ":587"
+hostname: "mail.dstat.coffee"
+password: "change-me"
+queue_dir: "/var/spool/mailrelay"
+workers: 5
+retry_max: 10
+
+servers:
+  - "23.94.96.34"
+
+domains:
+  - domain: "dstat.coffee"
+    dkim_key: "/etc/mail-relay/dkim/dstat.coffee.pem"
+    selector: "mail"
+
+tls_cert: ""
+tls_key: ""
