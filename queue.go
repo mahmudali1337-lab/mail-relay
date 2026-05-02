@@ -28,6 +28,7 @@ func enqueue(from string, to []string, data []byte) error {
 		Created: time.Now(),
 		NextTry: time.Now(),
 	}
+	log.Printf("[%s] queued from=%s to=%v size=%d bytes", item.ID, from, to, len(data))
 	b, err := json.Marshal(item)
 	if err != nil {
 		return err
